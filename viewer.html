@@ -33,11 +33,11 @@ PERFORMANCE OF THIS SOFTWARE.
 
         <script>
             setTimeout(function(){
-                document.getElementById('some_frame_id').contentWindow.location.reload();
+                document.getElementById('iframe').contentWindow.location.reload();
             }, 2000);
         </script>
     </head>
     <body>
-        <iframe src="viewer-iframe.html"></iframe>
+        <iframe src="viewer-iframe.html" id="iframe"></iframe>
     </body>
 </html>
