@@ -122,7 +122,7 @@ def main():
 
         folder_index = 0
         for folder in DESTINATIONS:
-            print("{} - Move to {}", folder_index+1, folder)
+            print("{} - Move to {}", folder_index + 1, folder)
 
         print("0 - Skip")
         print("000 - Delete")
