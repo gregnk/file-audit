@@ -22,9 +22,27 @@ import subprocess
 
 MAX_ITERATION = 5 # For debugging
 
+IMG_EXTS = [
+    "png",
+    "jpeg",
+    "jpg",
+    "gif",
+    "bmp",
+    "webp",
+]
+
+VID_EXTS = [
+    "webp",
+    "mp4",
+    "webm",
+    "mov",
+    "wmv",
+    "ogv"
+]
+
 def clear_screen():
         print("\033[H\033[J")
-        
+
 def escape_slashes(input):
     return input.replace("\"", "\\\"")
 
@@ -39,19 +57,7 @@ def get_files_in_dir_toplevel(dir):
     return list
 
 def check_file_ext(file_ext):
-    ALLOWED_EXTS = [
-        "png",
-        "jpeg",
-        "jpg",
-        "gif",
-        "bmp",
-        "webp",
-        "mp4",
-        "webm",
-        "mov",
-        "wmv",
-        "ogv"
-    ]
+    ALLOWED_EXTS = IMG_EXTS + VID_EXTS
 
     for ext in ALLOWED_EXTS:
         if (file_ext == ext):
