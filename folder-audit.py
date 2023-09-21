@@ -96,8 +96,6 @@ def main():
         if i > MAX_ITERATION and MAX_ITERATION > 0:
             break
 
-    os.system("viewer.html")
-
     '''
     OPTIONS:
         move to dir 1
