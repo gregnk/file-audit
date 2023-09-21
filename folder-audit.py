@@ -16,9 +16,6 @@ PERFORMANCE OF THIS SOFTWARE.
 
 import sys
 import os
-import json
-import shlex
-import subprocess
 
 MAX_ITERATION = 5 # For debugging
 
