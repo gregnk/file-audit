@@ -22,6 +22,9 @@ import subprocess
 
 MAX_ITERATION = 5 # For debugging
 
+def clear_screen():
+        print("\033[H\033[J")
+        
 def escape_slashes(input):
     return input.replace("\"", "\\\"")
 
