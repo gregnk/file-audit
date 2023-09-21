@@ -108,10 +108,31 @@ def main():
 
         whitelist (add later)
     '''
-    for file in file_list:
-        print(file)
 
     # Open the viewer (right now it's just an HTML file lmao)
+    os.system("viewer.html")
+
+    for file in file_list:
+        CURRENT_FILE_PATH = FOLDER_PATH + file
+        clear_screen()
+        print(file)
+
+        folder_index = 0
+        for folder in DESTINATIONS:
+            print("{} - Move to {}", folder_index+1, folder)
+
+        print("0 - Skip")
+        print("000 - Delete")
+
+        # Update the viewer file
+        viewer_read = open("viewer.html", "r")
+
+        viewer_str = viewer_read.read()
+        viewer_read.close()
+
+        # Check the file ext
+        viewer_str_out = viewer_str.replace(r'<span id="filename">.*</span>', '<span id="filename">' + CURRENT_FILE_PATH + '</script>')
+        viewer_str_out = viewer_str_out.replace('<div id="content">', '<script src=' + file_name + '.js></script>')
 
 if __name__ == '__main__':
     main()
