@@ -56,6 +56,14 @@ def get_files_in_dir_toplevel(dir):
 
     return list
 
+def get_destinations():
+    f = open("destinations.txt", "r")
+
+    return_var = f.readlines()
+    f.close()
+
+    return return_var
+
 def check_file_ext(file_ext):
     ALLOWED_EXTS = IMG_EXTS + VID_EXTS
 
@@ -66,6 +74,8 @@ def check_file_ext(file_ext):
     return False
 
 def main():
+
+    DESTINATIONS = get_destinations()
 
     # Get a list of files in the dir
     FOLDER_PATH = sys.argv[1]
