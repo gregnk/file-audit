@@ -70,6 +70,9 @@ def check_file_ext(file_ext):
         
     return False
 
+def get_file_ext(file):
+    return os.path.splitext(file)
+
 def main():
 
     DESTINATIONS = get_destinations()
@@ -84,7 +87,7 @@ def main():
     i = 0
     
     for file in file_list_unfiltered:
-        file_ext = os.path.splitext(file)
+        file_ext = get_file_ext(file)
 
         if check_file_ext(file_ext):
             file_list.append(FOLDER_PATH + file)
