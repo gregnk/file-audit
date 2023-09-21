@@ -29,7 +29,6 @@ IMG_EXTS = [
 ]
 
 VID_EXTS = [
-    "webp",
     "mp4",
     "webm",
     "mov",
