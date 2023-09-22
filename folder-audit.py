@@ -144,9 +144,14 @@ def get_destinations():
 
 def get_exemptions():
 
-    exemptions_file_name = "exemptions.txt"
+    EXEMPTIONS_FILE_NAME = "exemptions.txt"
 
-    f = open(exemptions_file_name, "r")
+    if (os.path.isfile(EXEMPTIONS_FILE_NAME) == False):
+        with open(EXEMPTIONS_FILE_NAME, 'w') as f:
+            f.write('')
+            f.close()
+
+    f = open(EXEMPTIONS_FILE_NAME, "r")
 
     return_var = f.readlines()
     f.close()
