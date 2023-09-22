@@ -122,7 +122,7 @@ def get_files_in_dir_toplevel(dir):
 def get_destinations():
 
     destinations_file_name = ""
-    
+
     if (len(sys.argv) >= 3):
         destinations_file_name = sys.argv[2]
 
@@ -139,7 +139,23 @@ def get_destinations():
         if (str[-1:] == "\n"):
             return_var[i] = str[:-1]
 
-        #return_var[i] = convert_backslashes(return_var[i])
+        i += 1
+    return return_var
+
+def get_exemptions():
+
+    exemptions_file_name = "exemptions"
+
+    f = open(exemptions_file_name, "r")
+
+    return_var = f.readlines()
+    f.close()
+
+    i = 0
+    for str in return_var:
+        if (str[-1:] == "\n"):
+            return_var[i] = str[:-1]
+
         i += 1
     return return_var
 
@@ -212,6 +228,10 @@ def main():
     if len(file_list) > 0:
         for file_path in file_list:
             
+            # Skip exempt files
+            if file_path in get_exemptions():
+                continue
+
             file_name = os.path.basename(file_path)
 
             # Update the viewer file
@@ -261,7 +281,8 @@ def main():
 
                 print("")
                 print("0 - Skip")
-                print("000 - Delete")
+                print("00 - Exempt")
+                print("9000 - Delete")
 
                 print("> ", end='')
                 user_input_str = input()
@@ -294,9 +315,19 @@ def main():
                     valid_input = True
                     input_msg = "File skipped"
 
+                # Exempt
+                elif (user_input_str == "00"):
+                    # print("Skip")
+                    valid_input = True
+                    input_msg = "File exempted"
+
+                    with open('exemptions.txt', 'a') as file:
+                        file.write(file_path)
+
                 # Delete
-                elif (user_input_str == "000"):
+                elif (user_input_str == "9000"):
                     # print("Del")
+                    valid_input = True                    
                     input_msg = "File deleted"
                     send2trash(file_path)
 
