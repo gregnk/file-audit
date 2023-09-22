@@ -311,7 +311,7 @@ def main():
 
                 # print(type(user_input))
                 # print(user_input == 0)
-                print(user_input > 0 and user_input < len(DESTINATIONS))
+                #print(user_input > 0 and user_input < len(DESTINATIONS))
 
 
                 # Move
