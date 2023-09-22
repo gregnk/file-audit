@@ -253,7 +253,7 @@ def main():
             viewer_write.write(viewer_str_out)
             viewer_write.close()
 
-            input_msg = ""
+            input_msg = "Ready"
             valid_input = False
             while valid_input == False:
                 clear_screen()
