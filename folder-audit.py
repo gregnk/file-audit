@@ -128,7 +128,7 @@ def get_destinations():
         if (str[-1:] == "\n"):
             return_var[i] = str[:-1]
 
-        return_var[i] = convert_backslashes(return_var[i])
+        #return_var[i] = convert_backslashes(return_var[i])
         i += 1
     return return_var
 
