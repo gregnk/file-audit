@@ -270,7 +270,7 @@ def main():
 
             # Write the updated HTML
             viewer_write = open("viewer-iframe.html", "w")
-            viewer_write.write(viewer_str_out.encode('ascii', 'xmlcharrefreplace').decode())
+            viewer_write.write(viewer_str_out.encode('ascii', 'xmlcharrefreplace').decode()) # Escape unicode chars
             viewer_write.close()
 
             valid_input = False
