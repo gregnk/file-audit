@@ -286,8 +286,8 @@ def main():
                     folder_index += 1
 
                 print("")
-                print("0 - Skip")
-                print("00 - Exempt")
+                print("0 - Keep")
+                print("00 - Defer")
                 print("9000 - Delete")
 
                 print("> ", end='')
@@ -315,14 +315,8 @@ def main():
                     valid_input = True
                     input_msg = "File moved to {}".format(DESTINATIONS[user_input - 1])
 
-                # Skip
+                # Keep
                 elif (user_input_str == "0"):
-                    # print("Skip")
-                    valid_input = True
-                    input_msg = "File skipped"
-
-                # Exempt
-                elif (user_input_str == "00"):
                     # print("Skip")
                     valid_input = True
                     input_msg = "File exempted"
@@ -330,6 +324,12 @@ def main():
                     with open('exemptions.txt', 'a', encoding="utf-8") as file:
                         file_path += "\n"
                         file.write(file_path)
+
+                # Defer
+                elif (user_input_str == "00"):
+                    # print("Skip")
+                    valid_input = True
+                    input_msg = "File skipped"
 
                 # Delete
                 elif (user_input_str == "9000"):
