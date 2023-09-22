@@ -23,8 +23,9 @@ import atexit
 import signal
 import re
 
-MAX_ITERATION = 0 # For debugging
-AUTOPLAY_VIDEOS = False
+
+MAX_ITERATION = 0       # For debugging
+AUTOPLAY_VIDEOS = False # Doesn't actually do anything yet
 
 IMG_EXTS = [
     "png",
