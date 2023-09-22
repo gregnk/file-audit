@@ -180,6 +180,7 @@ def reset_viewer():
     # Reset the counter
     viewer_str_out = re.sub('<span id="index">.*</span> &ndash;', '<span id="index">' + VIEWER_DEFAULT_INDEX_HTML + '</span> &ndash;', viewer_str_out)
 
+    # Re-add the default notice
     viewer_str_out = re.sub('<div id="default"></div>', '<div id="default">{}</div>'.format(VIEWER_DEFAULT_NOTICE), viewer_str_out)
     
     # Write the updated HTML
