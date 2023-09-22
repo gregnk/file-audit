@@ -120,7 +120,16 @@ def get_files_in_dir_toplevel(dir):
     return list
 
 def get_destinations():
-    f = open("destinations.txt", "r")
+
+    destinations_file_name = ""
+    
+    if (len(sys.argv) >= 3):
+        destinations_file_name = sys.argv[2]
+
+    else:
+        destinations_file_name = "destinations.txt"
+
+    f = open(destinations_file_name, "r")
 
     return_var = f.readlines()
     f.close()
