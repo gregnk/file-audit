@@ -194,24 +194,8 @@ def main():
         if i > MAX_ITERATION and MAX_ITERATION > 0:
             break
 
-    '''
-    OPTIONS:
-        move to dir 1
-        move to dir 2
-        move to dir 3
-        
-        delete
-        
-        skip
-
-        whitelist (add later)
-    '''
-
     # Open the viewer (right now it's just an HTML file lmao)
     #os.system("viewer.html")
-
-
-    
     i = 0
 
     #print(file_list)
