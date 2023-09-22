@@ -22,6 +22,8 @@ import pathlib
 import atexit
 import signal
 import re
+import shutil
+from send2trash import send2trash
 
 
 MAX_ITERATION = 0       # For debugging
@@ -185,7 +187,7 @@ def main():
         print(check_file_ext(file_ext))
         
         if check_file_ext(file_ext):
-            file_list.append(convert_backslashes(FOLDER_PATH + file_path))
+            file_list.append(FOLDER_PATH + file_path)
 
         i += 1
 
@@ -232,14 +234,15 @@ def main():
 
 
             # Check the file ext
-            file_ext = get_file_ext(file_path)
+            file_path_converted = convert_backslashes(file_path)
+            file_ext = get_file_ext(file_path_converted)
             media_html = ""
 
             if file_ext in IMG_EXTS:
-                media_html = get_viewer_media_img_html(file_path)
+                media_html = get_viewer_media_img_html(file_path_converted)
 
             elif file_ext in VID_EXTS:
-                media_html = get_viewer_media_vid_html(file_path)
+                media_html = get_viewer_media_vid_html(file_path_converted)
 
             viewer_str_out = viewer_str_out.replace(last_media_html, media_html)
 
@@ -250,24 +253,75 @@ def main():
             viewer_write.write(viewer_str_out)
             viewer_write.close()
 
-            clear_screen()
-            print(file_name + "\n")
+            input_msg = ""
+            valid_input = False
+            while valid_input == False:
+                clear_screen()
+                print(input_msg)
+                print("=========================================")
+                print(file_name + "\n")
 
-            folder_index = 0
-            for folder in DESTINATIONS:
-                print("{} - Move to {}".format(folder_index + 1, folder))
-                folder_index += 1
+                folder_index = 0
+                for folder in DESTINATIONS:
+                    print("{} - Move to {}".format(folder_index + 1, folder))
+                    folder_index += 1
 
-            print("")
-            print("0 - Skip")
-            print("000 - Delete")
+                print("")
+                print("0 - Skip")
+                print("000 - Delete")
+
+                print("> ", end='')
+                user_input_str = input()
+
+                user_input = 0
+
+                # Check if the input is an int
+                try:
+                    user_input = int(user_input_str)
+
+                except:
+                    input_msg = "Invalid entry"
+                    continue
+
+                # print(type(user_input))
+                # print(user_input == 0)
+                print(user_input > 0 and user_input < len(DESTINATIONS))
+
+
+                # Move
+                if (user_input > 0 and user_input < len(DESTINATIONS)):
+                    # print("Move")
+                    shutil.move(file_path, DESTINATIONS[user_input - 1])
+                    valid_input = True
+                    input_msg = "File moved to {}".format(DESTINATIONS[user_input - 1])
+
+                # Skip
+                elif (user_input == "0"):
+                    # print("Skip")
+                    valid_input = True
+                    input_msg = "File skipped"
+
+                # Delete
+                elif (user_input_str == "000"):
+                    # print("Del")
+                    input_msg = "File deleted"
+                    send2trash(file_path)
+
+                # Invalid input
+                else:
+                    # print("Err")
+                    input_msg = "Invalid entry"
+                    valid_input = False
+                
+                
+                # input()
+
 
             # Update the last media html
             last_file_name_html = file_name_html
             last_media_html = media_html
             last_index_html = "{}/{}".format(i, len(file_list))
             i += 1
-            input()
 
             if i > MAX_ITERATION and MAX_ITERATION > 0:
                 break
