@@ -296,7 +296,7 @@ def main():
                     input_msg = "File moved to {}".format(DESTINATIONS[user_input - 1])
 
                 # Skip
-                elif (user_input == "0"):
+                elif (user_input_str == "0"):
                     # print("Skip")
                     valid_input = True
                     input_msg = "File skipped"
