@@ -95,9 +95,8 @@ def get_viewer_media_vid_html(file_path):
 # !! WARNING: Do not change these vars !!
 ################################################
 VIEWER_DEFAULT_FILE_NAME = "Reisen.Udongein.Inaba.600.2396749.jpg"
-VIEWER_DEFAULT_FOLDER = "C:/Users/Gregory/Downloads/"
 VIEWER_DEFAULT_FILE_NAME_HTML = get_viewer_filename_html(VIEWER_DEFAULT_FILE_NAME)
-VIEWER_DEFAULT_MEDIA_HTML = get_viewer_media_img_html(VIEWER_DEFAULT_FOLDER + VIEWER_DEFAULT_FILE_NAME)
+VIEWER_DEFAULT_MEDIA_HTML = get_viewer_content_html('<img src="{}">'.format(VIEWER_DEFAULT_FILE_NAME))
 VIEWER_DEFAULT_INDEX_HTML = "#/#"
 ################################################
 
