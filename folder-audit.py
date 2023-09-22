@@ -20,6 +20,7 @@ import sys
 import os
 import pathlib
 import atexit
+import signal
 
 MAX_ITERATION = 0 # For debugging
 AUTOPLAY_VIDEOS = False
@@ -41,6 +42,9 @@ VID_EXTS = [
     "ogv"
 ]
 
+def convert_backslashes(input):
+    return input.replace("\\", "/")
+
 def check_file_ext(file_ext):
     ALLOWED_EXTS = IMG_EXTS + VID_EXTS
 
@@ -51,32 +55,33 @@ def check_file_ext(file_ext):
     return False
 
 def get_file_ext(file):
-    return pathlib.Path(file).suffix
+    return (pathlib.Path(file).suffix)[1:]
 
 def get_viewer_filename_html(file_path):
     return '<span id="filename">{}</span>'.format(file_path)
 
 def get_viewer_content_html(input):
-    return '<span id="content">' + input + '</span>'
+    return '<div id="content">' + input + '</div>'
 
 def get_viewer_media_img_html(file_path):
-    return get_viewer_content_html('<img src="{}">'.format(file_path))
+    return get_viewer_content_html('<img src="file:///{}">'.format(file_path))
 
 def get_viewer_media_vid_html(file_path):
     return_str = ""
     file_ext = get_file_ext(file_path)
 
+    print(file_ext)
     # Add 
     match file_ext:
         case "mp4" | "webm":
-            return_str = '<video controls><source src="{}" type="video/{}"></video>'.format(file_path, file_ext)
+            return_str = '<video controls><source src="file:///{}" type="video/{}"></video>'.format(file_path, file_ext)
 
         case "ogv":
-            '<video controls><source src="{}" type="video/ogg"></video>'.format(file_path)
+            return_str = '<video controls><source src="file:///{}" type="video/ogg"></video>'.format(file_path)
         
         # Old video formats not supported by HTML5
         case "mov" | "webm":
-            '<b>This file cannot be displayed</b>'
+            return_str = '<b>This file cannot be displayed</b>'
 
         case _:
             raise Exception("Invalid file ext")
@@ -86,12 +91,13 @@ def get_viewer_media_vid_html(file_path):
     return get_viewer_content_html(return_str)
 
 ################################################
-# !! WARNING: Do not change these consts !!
+# !! WARNING: Do not change these vars !!
 ################################################
 VIEWER_DEFAULT_FILE_NAME = "Reisen.Udongein.Inaba.600.2396749.jpg"
-VIEWER_DEFAULT_FOLDER = "file:///C:/Users/Gregory/Downloads/"
+VIEWER_DEFAULT_FOLDER = "C:/Users/Gregory/Downloads/"
 VIEWER_DEFAULT_FILE_NAME_HTML = get_viewer_filename_html(VIEWER_DEFAULT_FILE_NAME)
-VIEWER_DEFAULT_MEDIA_HTML = get_viewer_media_img_html(VIEWER_DEFAULT_FILE_NAME)
+VIEWER_DEFAULT_MEDIA_HTML = get_viewer_media_img_html(VIEWER_DEFAULT_FOLDER + VIEWER_DEFAULT_FILE_NAME)
+VIEWER_DEFAULT_INDEX_HTML = "#/#"
 ################################################
 
 def clear_screen():
@@ -116,10 +122,14 @@ def get_destinations():
     return_var = f.readlines()
     f.close()
 
-    return return_var
+    i = 0
+    for str in return_var:
+        if (str[-1:] == "\n"):
+            return_var[i] = str[:-1]
 
-last_file_name_html = ""
-last_media_html = ""
+        return_var[i] = convert_backslashes(return_var[i])
+        i += 1
+    return return_var
 
 def reset_viewer():
     viewer_read = open("viewer-iframe.html", "r")
@@ -138,11 +148,20 @@ def reset_viewer():
     viewer_write.write(viewer_str_out)
     viewer_write.close()
 
+def kb_interrupt_handler(signum, frame):
 
+    # Since Ctrl-C send 2 args
+    reset_viewer()
 
 def main():
 
+    last_file_name_html = VIEWER_DEFAULT_FILE_NAME_HTML
+    last_media_html = VIEWER_DEFAULT_MEDIA_HTML
+    last_index_html = VIEWER_DEFAULT_INDEX_HTML
+
+    # Reset the file upon exit
     #atexit.register(reset_viewer)
+    #signal.signal(signal.SIGINT, kb_interrupt_handler)
 
     DESTINATIONS = get_destinations()
 
@@ -156,13 +175,13 @@ def main():
     i = 0
     
     for file_name in file_list_unfiltered:
-        file_ext = get_file_ext(file_name)[1:]
+        file_ext = get_file_ext(file_name)
 
         print(file_ext, end=" - ")
         print(check_file_ext(file_ext))
         
         if check_file_ext(file_ext):
-            file_list.append(FOLDER_PATH + file_name)
+            file_list.append(convert_backslashes(FOLDER_PATH + file_name))
 
         i += 1
 
@@ -189,24 +208,25 @@ def main():
     
     i = 0
 
-    print(file_list)
-    return 
+    #print(file_list)
 
     if len(file_list) > 0:
         for file_name in file_list:
-
-            print("test")
-            file_path = FOLDER_PATH + file_name
+            
+            #file_path = FOLDER_PATH + file_name
+            file_path = file_name
 
             # Update the viewer file
             ################################
-            viewer_read = open("viewer.html", "r")
+            viewer_read = open("viewer-iframe.html", "r")
 
             viewer_str = viewer_read.read()
             viewer_read.close()
 
             # Update the file name
-            viewer_str_out = viewer_str.replace(VIEWER_DEFAULT_FILE_NAME_HTML, get_viewer_filename_html(file_name))
+            file_name_html = get_viewer_filename_html(file_name)
+            viewer_str_out = viewer_str.replace(last_file_name_html, file_name_html)
+
 
             # Check the file ext
             file_ext = get_file_ext(file_path)
@@ -218,32 +238,37 @@ def main():
             elif file_ext in VID_EXTS:
                 media_html = get_viewer_media_vid_html(file_path)
 
-            viewer_str_out = viewer_str_out.replace(VIEWER_DEFAULT_FILE_NAME_HTML, media_html)
+            viewer_str_out = viewer_str_out.replace(last_media_html, media_html)
 
-
+            viewer_str_out = viewer_str_out.replace(last_index_html, "{}/{}".format(i, len(file_list)))
 
             # Write the updated HTML
-            viewer_write = open("..\\out\\index.html", "w")
+            viewer_write = open("viewer-iframe.html", "w")
             viewer_write.write(viewer_str_out)
             viewer_write.close()
 
             clear_screen()
-            print(file_name)
+            print(file_name + "\n")
 
             folder_index = 0
             for folder in DESTINATIONS:
-                print("{} - Move to {}", folder_index + 1, folder)
+                print("{} - Move to {}".format(folder_index + 1, folder))
+                folder_index += 1
 
+            print("")
             print("0 - Skip")
             print("000 - Delete")
 
-            # Update the last media html (used in the reset)
-            last_file_name_html = file_name
+            # Update the last media html
+            last_file_name_html = file_name_html
             last_media_html = media_html
-            i += 0
+            last_index_html = "{}/{}".format(i, len(file_list))
+            i += 1
+            input()
 
             if i > MAX_ITERATION and MAX_ITERATION > 0:
                 break
+
         # Reset the viewer file
         ################################
         reset_viewer()
