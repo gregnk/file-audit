@@ -176,7 +176,7 @@ def reset_viewer():
     # Reset the media
     viewer_str_out = re.sub('<div id="content">.*</div>', VIEWER_DEFAULT_MEDIA_HTML, viewer_str_out)
 
-    # Reset
+    # Reset the counter
     viewer_str_out = re.sub('<span id="index">.*</span> &ndash;', '<span id="index">' + VIEWER_DEFAULT_INDEX_HTML + '</span> &ndash;', viewer_str_out)
 
     # Write the updated HTML
