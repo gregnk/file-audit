@@ -151,7 +151,7 @@ def get_exemptions():
             f.write('')
             f.close()
 
-    f = open(EXEMPTIONS_FILE_NAME, "r")
+    f = open(EXEMPTIONS_FILE_NAME, "r", encoding='utf-8', errors='ignore')
 
     return_var = f.readlines()
     f.close()
@@ -270,7 +270,7 @@ def main():
 
             # Write the updated HTML
             viewer_write = open("viewer-iframe.html", "w")
-            viewer_write.write(viewer_str_out)
+            viewer_write.write(viewer_str_out.encode('ascii', 'xmlcharrefreplace').decode())
             viewer_write.close()
 
             valid_input = False
@@ -327,8 +327,9 @@ def main():
                     valid_input = True
                     input_msg = "File exempted"
 
-                    with open('exemptions.txt', 'a') as file:
-                        file.write(file_path + '\n')
+                    with open('exemptions.txt', 'a', encoding="utf-8") as file:
+                        file_path += "\n"
+                        file.write(file_path)
 
                 # Delete
                 elif (user_input_str == "9000"):
@@ -348,7 +349,7 @@ def main():
 
 
             # Update the last media html
-            last_file_name_html = file_name_html
+            last_file_name_html = file_name_html.encode('ascii', 'xmlcharrefreplace').decode()
             last_media_html = media_html
             last_index_html = "{}/{}".format(i, len(file_list))
             i += 1
