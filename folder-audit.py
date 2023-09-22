@@ -303,7 +303,7 @@ def main():
 
 
                 # Move
-                if (user_input > 0 and user_input < len(DESTINATIONS)):
+                if (user_input > 0 and user_input < len(DESTINATIONS) + 1):
                     # print("Move")
                     shutil.move(file_path, DESTINATIONS[user_input - 1])
                     valid_input = True
