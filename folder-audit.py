@@ -322,7 +322,7 @@ def main():
                     input_msg = "File exempted"
 
                     with open('exemptions.txt', 'a') as file:
-                        file.write(file_path)
+                        file.write(file_path + '\n')
 
                 # Delete
                 elif (user_input_str == "9000"):
