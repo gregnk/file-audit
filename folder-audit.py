@@ -231,6 +231,8 @@ def main():
     #print(file_list)
 
     if len(file_list) > 0:
+
+        input_msg = "Ready"
         for file_path in file_list:
             
             # Skip exempt files
@@ -271,7 +273,6 @@ def main():
             viewer_write.write(viewer_str_out)
             viewer_write.close()
 
-            input_msg = "Ready"
             valid_input = False
             while valid_input == False:
                 clear_screen()
