@@ -227,7 +227,7 @@ def main():
     # Open the viewer (right now it's just an HTML file lmao)
     #os.system("viewer.html")
     i = 0
-
+    file_list_len = len(file_list) - len(get_exemptions())
     #print(file_list)
 
     if len(file_list) > 0:
@@ -266,7 +266,7 @@ def main():
 
             viewer_str_out = viewer_str_out.replace(last_media_html, media_html)
 
-            viewer_str_out = viewer_str_out.replace(last_index_html, "{}/{}".format(i, len(file_list)))
+            viewer_str_out = viewer_str_out.replace(last_index_html, "{}/{}".format(i, file_list_len))
 
             # Write the updated HTML
             viewer_write = open("viewer-iframe.html", "w")
