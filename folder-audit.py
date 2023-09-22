@@ -101,6 +101,7 @@ VIEWER_DEFAULT_FILE_NAME = "Reisen.Udongein.Inaba.600.2396749.jpg"
 VIEWER_DEFAULT_FILE_NAME_HTML = get_viewer_filename_html(VIEWER_DEFAULT_FILE_NAME)
 VIEWER_DEFAULT_MEDIA_HTML = get_viewer_content_html('<img src="{}">'.format(VIEWER_DEFAULT_FILE_NAME))
 VIEWER_DEFAULT_INDEX_HTML = "#/#"
+VIEWER_DEFAULT_NOTICE = "*** DEFAULT PAGE ***"
 ################################################
 
 def clear_screen():
@@ -179,6 +180,8 @@ def reset_viewer():
     # Reset the counter
     viewer_str_out = re.sub('<span id="index">.*</span> &ndash;', '<span id="index">' + VIEWER_DEFAULT_INDEX_HTML + '</span> &ndash;', viewer_str_out)
 
+    viewer_str_out = re.sub('<div id="default"></div>', '<div id="default">{}</div>'.format(VIEWER_DEFAULT_NOTICE), viewer_str_out)
+    
     # Write the updated HTML
     viewer_write = open("viewer-iframe.html", "w")
     viewer_write.write(viewer_str_out)
@@ -267,6 +270,8 @@ def main():
             viewer_str_out = viewer_str_out.replace(last_media_html, media_html)
 
             viewer_str_out = viewer_str_out.replace(last_index_html, "{}/{}".format(i, file_list_len))
+
+            viewer_str_out = viewer_str_out.replace(VIEWER_DEFAULT_NOTICE, "")
 
             # Write the updated HTML
             viewer_write = open("viewer-iframe.html", "w")
