@@ -144,7 +144,7 @@ def get_destinations():
 
 def get_exemptions():
 
-    exemptions_file_name = "exemptions"
+    exemptions_file_name = "exemptions.txt"
 
     f = open(exemptions_file_name, "r")
 
