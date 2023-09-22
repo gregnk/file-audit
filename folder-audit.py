@@ -150,7 +150,7 @@ def reset_viewer():
 
 def kb_interrupt_handler(signum, frame):
 
-    # Since Ctrl-C send 2 args
+    # Since Ctrl-C sends 2 args
     reset_viewer()
 
 def main():
