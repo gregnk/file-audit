@@ -270,7 +270,7 @@ def main():
 
             viewer_str_out = viewer_str_out.replace(last_media_html, media_html)
 
-            viewer_str_out = viewer_str_out.replace(last_index_html, "{}/{}".format(i, file_list_len))
+            viewer_str_out = re.sub('<span id="index">.*</span> &ndash;', '<span id="index">{}/{}</span> &ndash;'.format(i, file_list_len), viewer_str_out)
 
             viewer_str_out = viewer_str_out.replace(VIEWER_DEFAULT_NOTICE, "")
 
