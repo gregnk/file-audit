@@ -21,6 +21,7 @@ import os
 import pathlib
 import atexit
 import signal
+import re
 
 MAX_ITERATION = 0 # For debugging
 AUTOPLAY_VIDEOS = False
@@ -137,11 +138,14 @@ def reset_viewer():
     viewer_str = viewer_read.read()
     viewer_read.close()
 
-    # Update the file name
-    viewer_str_out = viewer_str.replace(last_file_name_html, VIEWER_DEFAULT_FILE_NAME_HTML)
+    # Reset the file name
+    viewer_str_out = re.sub(get_viewer_filename_html(".*"), VIEWER_DEFAULT_FILE_NAME_HTML, viewer_str)
 
-    # Update the media
-    viewer_str_out = viewer_str_out.replace(last_media_html, VIEWER_DEFAULT_MEDIA_HTML)
+    # Reset the media
+    viewer_str_out = re.sub('<div id="content">.*</div>', VIEWER_DEFAULT_MEDIA_HTML, viewer_str_out)
+
+    # Reset
+    viewer_str_out = re.sub('<span id="index">.*</span> &ndash;', '<span id="index">' + VIEWER_DEFAULT_INDEX_HTML + '</span> &ndash;', viewer_str_out)
 
     # Write the updated HTML
     viewer_write = open("viewer-iframe.html", "w")
@@ -160,8 +164,8 @@ def main():
     last_index_html = VIEWER_DEFAULT_INDEX_HTML
 
     # Reset the file upon exit
-    #atexit.register(reset_viewer)
-    #signal.signal(signal.SIGINT, kb_interrupt_handler)
+    atexit.register(reset_viewer)
+    signal.signal(signal.SIGINT, kb_interrupt_handler)
 
     DESTINATIONS = get_destinations()
 
@@ -174,14 +178,14 @@ def main():
     # Filter non-media files (only images and videos)
     i = 0
     
-    for file_name in file_list_unfiltered:
-        file_ext = get_file_ext(file_name)
+    for file_path in file_list_unfiltered:
+        file_ext = get_file_ext(file_path)
 
         print(file_ext, end=" - ")
         print(check_file_ext(file_ext))
         
         if check_file_ext(file_ext):
-            file_list.append(convert_backslashes(FOLDER_PATH + file_name))
+            file_list.append(convert_backslashes(FOLDER_PATH + file_path))
 
         i += 1
 
@@ -211,10 +215,9 @@ def main():
     #print(file_list)
 
     if len(file_list) > 0:
-        for file_name in file_list:
+        for file_path in file_list:
             
-            #file_path = FOLDER_PATH + file_name
-            file_path = file_name
+            file_name = os.path.basename(file_path)
 
             # Update the viewer file
             ################################
