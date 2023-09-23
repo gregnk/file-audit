@@ -288,13 +288,13 @@ def main():
 
                 folder_index = 0
                 for folder in DESTINATIONS:
-                    print("{} - Move to {}".format(folder_index + 1, folder))
+                    print("{} \t- Move to {}".format(folder_index + 1, folder))
                     folder_index += 1
 
                 print("")
-                print("0 - Keep")
-                print("00 - Defer")
-                print("9000 - Delete")
+                print("0 \t- Keep")
+                print("00 \t- Defer")
+                print("9000 \t- Delete")
 
                 print("> ", end='')
                 user_input_str = input()
