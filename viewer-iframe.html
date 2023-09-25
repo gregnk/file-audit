@@ -18,11 +18,14 @@ PERFORMANCE OF THIS SOFTWARE.
     <head>
         <title></title>
         <style>
-            body {
-                margin:0 auto;
+            body, #toggleBtn {
                 text-align:center;
                 font-size: 30px;
                 font-family: "Arial Nova", "Arial";
+            }
+            
+            body {
+                margin:0 auto;
             }
             
             #content, img, video {
@@ -43,13 +46,36 @@ PERFORMANCE OF THIS SOFTWARE.
                 font-weight: bold;
                 text-decoration: underline;
                 margin-top: 50px;
-            }            
+            }
+            
         </style>
 
     <script>
-        setTimeout(function(){
-            window.location.reload();
-        }, 1000);
+
+        var doRefresh = true
+
+        function setRefreshTimeout() {
+            setTimeout(function(){
+                if (doRefresh)
+                    window.location.reload();
+            }, 1000);
+        }
+
+        function toggleRefresh() {
+            toggleBtn = document.getElementById("toggleBtn")
+            if (doRefresh) {
+                doRefresh = false
+                toggleBtn.innerHTML = "Enable refresh"
+            }
+
+            else {
+                doRefresh = true
+                toggleBtn.innerHTML = "Disable refresh"
+                setRefreshTimeout()
+            }
+        }
+
+        setRefreshTimeout()
     </script>
     </head>
     <body>
@@ -58,5 +84,7 @@ PERFORMANCE OF THIS SOFTWARE.
         <br>
         <div id="content"><img src="Reisen.Udongein.Inaba.600.2396749.jpg"></div>
         <div id="default">*** DEFAULT PAGE ***</div>
+        <br>
+        <button onclick="toggleRefresh()" id="toggleBtn">Disable refresh</button>
     </body>
 </html>
