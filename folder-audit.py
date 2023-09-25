@@ -24,6 +24,7 @@ import signal
 import re
 import shutil
 from send2trash import send2trash
+import traceback
 
 
 MAX_ITERATION = 0       # For debugging
@@ -294,6 +295,7 @@ def main():
                 print("0 \t- Keep")
                 print("00 \t- Defer")
                 print("9000 \t- Delete")
+                print("Ctrl-C \t- Quit")
 
                 print("> ", end='')
                 user_input_str = input()
@@ -367,4 +369,11 @@ def main():
     
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except EOFError as e:
+        dummy = 1 # Do nothing
+    except KeyboardInterrupt as e:
+        dummy = 1 # Do nothing
+    except Exception as e:
+        traceback.print_exc()
