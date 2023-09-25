@@ -197,7 +197,6 @@ def main():
 
     last_file_name_html = VIEWER_DEFAULT_FILE_NAME_HTML
     last_media_html = VIEWER_DEFAULT_MEDIA_HTML
-    last_index_html = VIEWER_DEFAULT_INDEX_HTML
 
     # Reset the file upon exit
     atexit.register(reset_viewer)
@@ -357,7 +356,6 @@ def main():
             # Update the last media html
             last_file_name_html = file_name_html.encode('ascii', 'xmlcharrefreplace').decode()
             last_media_html = media_html
-            last_index_html = "{}/{}".format(i, len(file_list))
             i += 1
 
             if i > MAX_ITERATION and MAX_ITERATION > 0:
