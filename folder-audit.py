@@ -27,7 +27,6 @@ from send2trash import send2trash
 import traceback
 
 
-MAX_ITERATION = 0       # For debugging
 AUTOPLAY_VIDEOS = False # Doesn't actually do anything yet
 
 IMG_EXTS = [
@@ -225,8 +224,6 @@ def main():
 
         i += 1
 
-        if i > MAX_ITERATION and MAX_ITERATION > 0:
-            break
 
     # Open the viewer (right now it's just an HTML file lmao)
     #os.system("viewer.html")
@@ -359,9 +356,6 @@ def main():
             last_file_name_html = file_name_html.encode('ascii', 'xmlcharrefreplace').decode()
             last_media_html = media_html
             i += 1
-
-            if i > MAX_ITERATION and MAX_ITERATION > 0:
-                break
 
         # Reset the viewer file
         ################################
