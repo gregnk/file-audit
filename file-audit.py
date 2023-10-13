@@ -25,6 +25,7 @@ import re
 import shutil
 from send2trash import send2trash
 import traceback
+from secure_delete import secure_delete
 
 
 AUTOPLAY_VIDEOS = False # Doesn't actually do anything yet
@@ -194,6 +195,7 @@ def kb_interrupt_handler(signum, frame):
     reset_viewer()
 
 def main():
+    secure_delete.secure_random_seed_init()
 
     last_file_name_html = VIEWER_DEFAULT_FILE_NAME_HTML
     last_media_html = VIEWER_DEFAULT_MEDIA_HTML
@@ -292,6 +294,7 @@ def main():
                 print("0 \t- Keep")
                 print("00 \t- Defer")
                 print("9000 \t- Delete")
+                print("9009 \t- Secure Delete")
                 print("Ctrl-C \t- Quit")
 
                 print("> ", end='')
@@ -341,6 +344,13 @@ def main():
                     valid_input = True                    
                     input_msg = "File deleted"
                     send2trash(file_path)
+
+                # Secure delete
+                elif (user_input_str == "9009"):
+                    # print("Del")
+                    valid_input = True                    
+                    input_msg = "File deleted securely"
+                    secure_delete.secure_delete(file_path)
 
                 # Invalid input
                 else:
