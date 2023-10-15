@@ -273,6 +273,7 @@ def main():
         options = webdriver.ChromeOptions()
         options.add_argument("--app=file:///" + VIEWER_FULL_PATH)
         options.add_argument('log-level=3')
+        options.add_experimental_option("excludeSwitches", ['enable-automation'])
         driver = webdriver.Chrome(options=options)
 
         terminal_window =  gw.getWindowsWithTitle(WINDOW_TITLE)[0]
