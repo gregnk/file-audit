@@ -26,7 +26,7 @@ import shutil
 from send2trash import send2trash
 import traceback
 from secure_delete import secure_delete
-
+from selenium import webdriver
 
 AUTOPLAY_VIDEOS = False # Doesn't actually do anything yet
 
@@ -192,8 +192,22 @@ def reset_viewer():
 def kb_interrupt_handler(signum, frame):
 
     # Since Ctrl-C sends 2 args
+    print("\n\nQuitting...")
     reset_viewer()
 
+def get_os_dir_slash():
+        if os.name == 'nt':
+            return "\\"
+            
+        elif os.name == 'posix':
+            return "/"
+            
+        elif os.name == 'java':
+            return "/"
+            
+        else:
+            raise Exception("Unsupported OS")
+        
 def main():
     secure_delete.secure_random_seed_init()
 
@@ -207,7 +221,7 @@ def main():
     DESTINATIONS = get_destinations()
 
     # Get a list of files in the dir
-    FOLDER_PATH = sys.argv[1]
+    FOLDER_PATH = sys.argv[1] if (sys.argv[1][-1] == get_os_dir_slash()) else sys.argv[1] + get_os_dir_slash()
     file_list_unfiltered = os.listdir(FOLDER_PATH)
 
     file_list = []
@@ -234,6 +248,16 @@ def main():
     #print(file_list)
 
     if len(file_list) > 0:
+
+        # Start the browser
+
+        VIEWER_FULL_PATH =  os.path.abspath("viewer-iframe.html")
+
+        # Start the viewer
+        options = webdriver.ChromeOptions()
+        options.add_argument("--app=file:///" + VIEWER_FULL_PATH)
+        options.add_argument('log-level=3')
+        driver = webdriver.Chrome(options=options)
 
         input_msg = "Ready"
         for file_path in file_list:
@@ -277,6 +301,9 @@ def main():
             viewer_write = open("viewer-iframe.html", "w")
             viewer_write.write(viewer_str_out.encode('ascii', 'xmlcharrefreplace').decode()) # Escape unicode chars
             viewer_write.close()
+
+            # Refresh viewer
+            driver.refresh()
 
             valid_input = False
             while valid_input == False:

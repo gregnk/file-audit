@@ -49,34 +49,6 @@ PERFORMANCE OF THIS SOFTWARE.
             }
             
         </style>
-
-    <script>
-
-        var doRefresh = true
-
-        function setRefreshTimeout() {
-            setTimeout(function(){
-                if (doRefresh)
-                    window.location.reload();
-            }, 1000);
-        }
-
-        function toggleRefresh() {
-            toggleBtn = document.getElementById("toggleBtn")
-            if (doRefresh) {
-                doRefresh = false
-                toggleBtn.innerHTML = "Enable refresh"
-            }
-
-            else {
-                doRefresh = true
-                toggleBtn.innerHTML = "Disable refresh"
-                setRefreshTimeout()
-            }
-        }
-
-        setRefreshTimeout()
-    </script>
     </head>
     <body>
         <span id="index">#/#</span> &ndash; <span id="filename">Reisen.Udongein.Inaba.600.2396749.jpg</span>
@@ -84,7 +56,5 @@ PERFORMANCE OF THIS SOFTWARE.
         <br>
         <div id="content"><img src="Reisen.Udongein.Inaba.600.2396749.jpg"></div>
         <div id="default">*** DEFAULT PAGE ***</div>
-        <br>
-        <button onclick="toggleRefresh()" id="toggleBtn">Disable refresh</button>
     </body>
 </html>
