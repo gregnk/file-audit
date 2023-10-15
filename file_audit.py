@@ -372,7 +372,6 @@ def main():
 
                 # Keep
                 elif (user_input_str == "0"):
-                    # print("Skip")
                     valid_input = True
                     input_msg = "File exempted"
 
@@ -382,20 +381,17 @@ def main():
 
                 # Defer
                 elif (user_input_str == "00"):
-                    # print("Skip")
                     valid_input = True
                     input_msg = "File skipped"
 
                 # Delete
                 elif (user_input_str == "9000"):
-                    # print("Del")
                     valid_input = True                    
                     input_msg = "File deleted"
                     send2trash(file_path)
 
                 # Secure delete
                 elif (user_input_str == "9009"):
-                    # print("Del")
                     valid_input = True                    
                     input_msg = "File deleted securely"
                     secure_delete.secure_delete(file_path)
