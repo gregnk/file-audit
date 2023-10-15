@@ -27,6 +27,8 @@ from send2trash import send2trash
 import traceback
 from secure_delete import secure_delete
 from selenium import webdriver
+import pygetwindow as gw
+import ctypes
 
 VIEWER_HTML_FILE = "viewer.html"
 AUTOPLAY_VIDEOS = False # Doesn't actually do anything yet
@@ -210,6 +212,19 @@ def get_os_dir_slash():
             raise Exception("Unsupported OS")
         
 def main():
+    # Update the window title
+    WINDOW_TITLE = "file-audit"
+    if os.name == 'nt':
+        try:
+            ctypes.windll.kernel32.SetConsoleTitleW(WINDOW_TITLE)
+        except:
+            dummy = 0
+    if os.name == 'posix':
+        try:
+            print("\x1b]2;{}\x07".format(WINDOW_TITLE))
+        except:
+            dummy = 0
+
     secure_delete.secure_random_seed_init()
 
     last_file_name_html = VIEWER_DEFAULT_FILE_NAME_HTML
@@ -259,6 +274,10 @@ def main():
         options.add_argument("--app=file:///" + VIEWER_FULL_PATH)
         options.add_argument('log-level=3')
         driver = webdriver.Chrome(options=options)
+
+        terminal_window =  gw.getWindowsWithTitle(WINDOW_TITLE)[0]
+        terminal_window.activate()
+        terminal_window.move(40, 40)
 
         input_msg = "Ready"
         for file_path in file_list:
