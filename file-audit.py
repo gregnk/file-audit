@@ -28,6 +28,7 @@ import traceback
 from secure_delete import secure_delete
 from selenium import webdriver
 
+VIEWER_HTML_FILE = "viewer.html"
 AUTOPLAY_VIDEOS = False # Doesn't actually do anything yet
 
 IMG_EXTS = [
@@ -167,7 +168,7 @@ def get_exemptions():
     return return_var
 
 def reset_viewer():
-    viewer_read = open("viewer-iframe.html", "r")
+    viewer_read = open(VIEWER_HTML_FILE, "r")
 
     viewer_str = viewer_read.read()
     viewer_read.close()
@@ -185,7 +186,7 @@ def reset_viewer():
     viewer_str_out = re.sub('<div id="default"></div>', '<div id="default">{}</div>'.format(VIEWER_DEFAULT_NOTICE), viewer_str_out)
     
     # Write the updated HTML
-    viewer_write = open("viewer-iframe.html", "w")
+    viewer_write = open(VIEWER_HTML_FILE, "w")
     viewer_write.write(viewer_str_out)
     viewer_write.close()
 
@@ -251,7 +252,7 @@ def main():
 
         # Start the browser
 
-        VIEWER_FULL_PATH =  os.path.abspath("viewer-iframe.html")
+        VIEWER_FULL_PATH =  os.path.abspath(VIEWER_HTML_FILE)
 
         # Start the viewer
         options = webdriver.ChromeOptions()
@@ -270,7 +271,7 @@ def main():
 
             # Update the viewer file
             ################################
-            viewer_read = open("viewer-iframe.html", "r")
+            viewer_read = open(VIEWER_HTML_FILE, "r")
 
             viewer_str = viewer_read.read()
             viewer_read.close()
@@ -298,7 +299,7 @@ def main():
             viewer_str_out = viewer_str_out.replace(VIEWER_DEFAULT_NOTICE, "")
 
             # Write the updated HTML
-            viewer_write = open("viewer-iframe.html", "w")
+            viewer_write = open(VIEWER_HTML_FILE, "w")
             viewer_write.write(viewer_str_out.encode('ascii', 'xmlcharrefreplace').decode()) # Escape unicode chars
             viewer_write.close()
 

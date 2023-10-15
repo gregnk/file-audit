@@ -16,22 +16,45 @@ PERFORMANCE OF THIS SOFTWARE.
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Viewer</title>
-
-        <script>
-
-        </script>
-
+        <title></title>
         <style>
-            iframe {      
-                display: block;  
-                height: 100vh; 
-                width: 100vw;    
-                border: none; 
+            body, #toggleBtn {
+                text-align:center;
+                font-size: 30px;
+                font-family: "Arial Nova", "Arial";
             }
+            
+            body {
+                margin:0 auto;
+            }
+            
+            #content, img, video {
+                margin-left:auto;
+                margin-right:auto;
+                text-align:center
+            }
+
+            img, video {
+                display: block;
+                max-width:500px;
+                max-height:500px;
+                width: auto;
+                height: auto;
+            }
+
+            #default {
+                font-weight: bold;
+                text-decoration: underline;
+                margin-top: 50px;
+            }
+            
         </style>
     </head>
     <body>
-        <iframe src="viewer-iframe.html" id="iframe"></iframe>
+        <span id="index">#/#</span> &ndash; <span id="filename">Reisen.Udongein.Inaba.600.2396749.jpg</span>
+        <br>
+        <br>
+        <div id="content"><img src="Reisen.Udongein.Inaba.600.2396749.jpg"></div>
+        <div id="default">*** DEFAULT PAGE ***</div>
     </body>
 </html>
