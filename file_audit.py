@@ -29,6 +29,7 @@ from secure_delete import secure_delete
 from selenium import webdriver
 import pygetwindow as gw
 import ctypes
+from screeninfo import get_monitors
 
 VIEWER_HTML_FILE = "viewer.html"
 AUTOPLAY_VIDEOS = False # Doesn't actually do anything yet
@@ -278,7 +279,14 @@ def main():
 
         terminal_window =  gw.getWindowsWithTitle(WINDOW_TITLE)[0]
         terminal_window.activate()
-        terminal_window.move(40, 40)
+
+        for m in get_monitors():
+            print(str(m))
+
+        monitor = get_monitors()[0]
+
+        print(monitor)
+        terminal_window.moveTo(monitor.width - 1200, monitor.height - 800)
 
         input_msg = "Ready"
         for file_path in file_list:

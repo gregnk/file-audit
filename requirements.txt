@@ -1,4 +1,5 @@
 PyGetWindow==0.0.9
+screeninfo==0.8.1
 secure_delete==0.0.2
 selenium==4.14.0
 Send2Trash==1.8.2
