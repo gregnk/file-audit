@@ -378,19 +378,48 @@ def main():
                 # print(user_input == 0)
                 #print(user_input > 0 and user_input < len(DESTINATIONS))
                 
+                FILE_DIR_PATH = os.path.dirname(file_path)
+                FILE_NAME = os.path.basename(file_path)
+                FILE_EXT = os.path.splitext(FILE_NAME)[1]
+                FILE_NAME_NO_EXT = os.path.splitext(FILE_NAME)[0]
+                FILE_EXISTS = os.path.isfile(destinations[user_input - 1] + get_os_dir_slash() + FILE_NAME)
 
                 # Move
                 if (user_input > 0 and user_input < len(destinations) + 1):
                     # print("Move")
-                    shutil.move(file_path, destinations[user_input - 1])
-                    valid_input = True
-                    input_msg = "File moved to {}".format(destinations[user_input - 1])
+                    
+                    # Rename the file if it already exists
+                    if (FILE_EXISTS):
+                        print("FILE EXISTS")
+                        print(FILE_NAME)
+                        input()
+                        renamed = False
+                        count = 1
+                        while (renamed == False):
 
+                            try:
+                                NEW_NAME = f"{FILE_DIR_PATH}{get_os_dir_slash()}{FILE_NAME_NO_EXT}-{count}{FILE_EXT}"
+                                os.rename(file_path, NEW_NAME)
+                                file_path = NEW_NAME
+
+                            except (FileExistsError, OSError):
+                                count += 1
+
+                            renamed = True
+
+                    try:
+                        shutil.move(file_path, destinations[user_input - 1])
+
+                        valid_input = True
+                        input_msg = "File moved to {}".format(destinations[user_input - 1])
+                    except (shutil.Error):
+                        valid_input = False
+                        input_msg = "== ERROR: Could not move file to {}".format(destinations[user_input - 1])
+                
                 # Move to new folder
                 elif (re.match(NEW_FOLDER_REGEX, user_input_str)):
                     NEW_FOLDER_PATH = user_input_str[2:] + get_os_dir_slash()
                     FOLDER_EXISTS = os.path.isdir(NEW_FOLDER_PATH + get_os_dir_slash())
-                    FILE_EXISTS = os.path.isfile(file_path + get_os_dir_slash())
                     OVERWRITE = (user_input_str[1] == "9")
 
                     # Check if the file doesn't already exist or if we are in overwrite mode
