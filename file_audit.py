@@ -125,17 +125,17 @@ def get_files_in_dir_toplevel(dir):
 
     return list
 
+def get_destinations_file_path():
+    if (len(sys.argv) >= 3):
+        return sys.argv[2]
+    
+    return "destinations.txt"
+
+DESTINATIONS_FILE_PATH = get_destinations_file_path()
+
 def get_destinations():
 
-    destinations_file_name = ""
-
-    if (len(sys.argv) >= 3):
-        destinations_file_name = sys.argv[2]
-
-    else:
-        destinations_file_name = "destinations.txt"
-
-    f = open(destinations_file_name, "r")
+    f = open(DESTINATIONS_FILE_PATH, "r")
 
     return_var = f.readlines()
     f.close()
@@ -235,7 +235,7 @@ def main():
     atexit.register(reset_viewer)
     signal.signal(signal.SIGINT, kb_interrupt_handler)
 
-    DESTINATIONS = get_destinations()
+    destinations = get_destinations()
 
     # Get a list of files in the dir
     FOLDER_PATH = sys.argv[1] if (sys.argv[1][-1] == get_os_dir_slash()) else sys.argv[1] + get_os_dir_slash()
@@ -342,11 +342,15 @@ def main():
                 print(file_name + "\n")
 
                 folder_index = 0
-                for folder in DESTINATIONS:
+                for folder in destinations:
                     print("{} \t- Move to {}".format(folder_index + 1, folder))
                     folder_index += 1
 
+                print("+ (\\) \t- Move to new folder")
+                #print("+9 (\\) \t- Move to new folder (overwrite)")
+
                 print("")
+
                 print("0 \t- Keep")
                 print("00 \t- Defer")
                 print("9000 \t- Delete")
@@ -358,26 +362,78 @@ def main():
 
                 user_input = 0
 
-                # Check if the input is an int
-                try:
-                    user_input = int(user_input_str)
+                NEW_FOLDER_REGEX = r"\+9? .*"
 
-                except:
-                    input_msg = "Invalid entry"
-                    continue
+                # Check if the input is an int
+
+                if not (re.match(NEW_FOLDER_REGEX, user_input_str)):
+                    try:
+                        user_input = int(user_input_str)
+
+                    except:
+                        input_msg = "Invalid entry"
+                        continue
 
                 # print(type(user_input))
                 # print(user_input == 0)
                 #print(user_input > 0 and user_input < len(DESTINATIONS))
-
+                
 
                 # Move
-                if (user_input > 0 and user_input < len(DESTINATIONS) + 1):
+                if (user_input > 0 and user_input < len(destinations) + 1):
                     # print("Move")
-                    shutil.move(file_path, DESTINATIONS[user_input - 1])
+                    shutil.move(file_path, destinations[user_input - 1])
                     valid_input = True
-                    input_msg = "File moved to {}".format(DESTINATIONS[user_input - 1])
+                    input_msg = "File moved to {}".format(destinations[user_input - 1])
 
+                # Move to new folder
+                elif (re.match(NEW_FOLDER_REGEX, user_input_str)):
+                    NEW_FOLDER_PATH = user_input_str[2:] + get_os_dir_slash()
+                    FOLDER_EXISTS = os.path.isdir(NEW_FOLDER_PATH + get_os_dir_slash())
+                    FILE_EXISTS = os.path.isfile(file_path + get_os_dir_slash())
+                    OVERWRITE = (user_input_str[1] == "9")
+
+                    # Check if the file doesn't already exist or if we are in overwrite mode
+                    if (FILE_EXISTS == False or OVERWRITE):
+
+                        create_folder_success = False
+
+                        # Create the folder if it doesn't already
+                        if (FOLDER_EXISTS == False):
+                            try:
+                                os.mkdir(NEW_FOLDER_PATH + get_os_dir_slash())
+                                valid_input = True
+                                create_folder_success = True
+                            except Exception as e:
+                                input_msg = "== ERROR: Could not create folder {}: {}".format(NEW_FOLDER_PATH, type(e).__name__)
+                                valid_input = False
+                                create_folder_success = False
+                            
+                        else:
+                            create_folder_success = True
+                        
+                        if create_folder_success:
+                            try:
+                                # Move the file
+                                shutil.move(file_path, NEW_FOLDER_PATH)
+
+                                input_msg = "File moved to new folder {}".format(NEW_FOLDER_PATH)
+                                valid_input = True
+
+                                # Add to the destinations list
+                                with open(DESTINATIONS_FILE_PATH, 'a', encoding="utf-8") as file:
+                                    file.write(NEW_FOLDER_PATH + "\n")
+
+                                destinations.append(NEW_FOLDER_PATH)
+
+                            except Exception as e:
+                                input_msg = "== ERROR: Could not move the file to {}: {}".format(NEW_FOLDER_PATH, type(e).__name__)
+                                valid_input = False
+
+                    else:
+                        input_msg = "== ERROR: Could move file to {}: Destination file already exists in folder".format(NEW_FOLDER_PATH)
+                        valid_input = False
+                        
                 # Keep
                 elif (user_input_str == "0"):
                     valid_input = True
