@@ -412,6 +412,8 @@ def main():
 
                         valid_input = True
                         input_msg = "File moved to {}".format(destinations[user_input - 1])
+                        if (renamed):
+                            input_msg += " (Duplicate)"
                     except (shutil.Error):
                         valid_input = False
                         input_msg = "== ERROR: Could not move file to {}".format(destinations[user_input - 1])
