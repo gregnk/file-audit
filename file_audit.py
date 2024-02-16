@@ -1,5 +1,5 @@
 '''
-(c) 2023 Gregory Karastergios
+(c) 2023-2024 Gregory Karastergios
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
