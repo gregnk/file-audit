@@ -362,7 +362,7 @@ def main():
 
                 user_input = 0
 
-                NEW_FOLDER_REGEX = r"\+9? .*"
+                NEW_FOLDER_REGEX = r"\+\-? .*"
 
                 # Check if the input is an int
 
@@ -422,7 +422,7 @@ def main():
                 elif (re.match(NEW_FOLDER_REGEX, user_input_str)):
                     NEW_FOLDER_PATH = user_input_str[2:] + get_os_dir_slash()
                     FOLDER_EXISTS = os.path.isdir(NEW_FOLDER_PATH + get_os_dir_slash())
-                    OVERWRITE = (user_input_str[1] == "9")
+                    OVERWRITE = (user_input_str[1] == "-")
 
                     # Check if the file doesn't already exist or if we are in overwrite mode
                     if (FILE_EXISTS == False or OVERWRITE):
