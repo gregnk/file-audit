@@ -388,6 +388,7 @@ def main():
                 if (user_input > 0 and user_input < len(destinations) + 1):
                     # print("Move")
                     
+                    renamed = False
                     # Rename the file if it already exists
                     if (FILE_EXISTS):
                         #print("FILE EXISTS")
