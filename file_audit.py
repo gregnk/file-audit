@@ -390,9 +390,9 @@ def main():
                     
                     # Rename the file if it already exists
                     if (FILE_EXISTS):
-                        print("FILE EXISTS")
-                        print(FILE_NAME)
-                        input()
+                        #print("FILE EXISTS")
+                        #print(FILE_NAME)
+                        #input()
                         renamed = False
                         count = 1
                         while (renamed == False):
