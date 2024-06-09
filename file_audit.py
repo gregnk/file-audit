@@ -382,7 +382,7 @@ def main():
                 FILE_NAME = os.path.basename(file_path)
                 FILE_EXT = os.path.splitext(FILE_NAME)[1]
                 FILE_NAME_NO_EXT = os.path.splitext(FILE_NAME)[0]
-                FILE_EXISTS = os.path.isfile(destinations[user_input - 1] + get_os_dir_slash() + FILE_NAME)
+                FILE_EXISTS = os.path.isfile(destinations[user_input - 1] + get_os_dir_slash() + FILE_NAME) if (user_input != 0 and user_input < len(destinations)) else False
 
                 # Move
                 if (user_input > 0 and user_input < len(destinations) + 1):
