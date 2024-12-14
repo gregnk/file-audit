@@ -518,8 +518,8 @@ if __name__ == '__main__':
     try:
         main()
     except EOFError as e:
-        dummy = 1 # Do nothing
+        pass
     except KeyboardInterrupt as e:
-        dummy = 1 # Do nothing
+        pass
     except Exception as e:
         traceback.print_exc()
