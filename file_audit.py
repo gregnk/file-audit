@@ -465,7 +465,7 @@ def main():
                                 valid_input = False
 
                     else:
-                        input_msg = "== ERROR: Could move file to {}: Destination file already exists in folder".format(NEW_FOLDER_PATH)
+                        input_msg = "== ERROR: Could not move file to {}: Destination file already exists in folder".format(NEW_FOLDER_PATH)
                         valid_input = False
                         
                 # Keep
