@@ -294,48 +294,54 @@ def main():
             # Skip exempt files
             if file_path in get_exemptions():
                 continue
+            
+            next_item = False
+            update_viewer = True
 
-            file_name = os.path.basename(file_path)
+            while next_item == False:
 
-            # Update the viewer file
-            ################################
-            viewer_read = open(VIEWER_HTML_FILE, "r")
+                file_name = os.path.basename(file_path)
 
-            viewer_str = viewer_read.read()
-            viewer_read.close()
+                # Update the viewer file
+                ################################
+                if update_viewer:
+                    viewer_read = open(VIEWER_HTML_FILE, "r")
 
-            # Update the file name
-            file_name_html = get_viewer_filename_html(file_name)
-            viewer_str_out = viewer_str.replace(last_file_name_html, file_name_html)
+                    viewer_str = viewer_read.read()
+                    viewer_read.close()
+
+                    # Update the file name
+                    file_name_html = get_viewer_filename_html(file_name)
+                    viewer_str_out = viewer_str.replace(last_file_name_html, file_name_html)
 
 
-            # Check the file ext
-            file_path_converted = convert_backslashes(file_path)
-            file_ext = get_file_ext(file_path_converted)
-            media_html = ""
+                    # Check the file ext
+                    file_path_converted = convert_backslashes(file_path)
+                    file_ext = get_file_ext(file_path_converted)
+                    media_html = ""
 
-            if file_ext in IMG_EXTS:
-                media_html = get_viewer_media_img_html(file_path_converted)
+                    if file_ext in IMG_EXTS:
+                        media_html = get_viewer_media_img_html(file_path_converted)
 
-            elif file_ext in VID_EXTS:
-                media_html = get_viewer_media_vid_html(file_path_converted)
+                    elif file_ext in VID_EXTS:
+                        media_html = get_viewer_media_vid_html(file_path_converted)
 
-            viewer_str_out = viewer_str_out.replace(last_media_html, media_html)
+                    viewer_str_out = viewer_str_out.replace(last_media_html, media_html)
 
-            viewer_str_out = re.sub('<span id="index">.*</span> &ndash;', '<span id="index">{}/{}</span> &ndash;'.format(i, file_list_len), viewer_str_out)
+                    viewer_str_out = re.sub('<span id="index">.*</span> &ndash;', '<span id="index">{}/{}</span> &ndash;'.format(i, file_list_len), viewer_str_out)
 
-            viewer_str_out = viewer_str_out.replace(VIEWER_DEFAULT_NOTICE, "")
+                    viewer_str_out = viewer_str_out.replace(VIEWER_DEFAULT_NOTICE, "")
 
-            # Write the updated HTML
-            viewer_write = open(VIEWER_HTML_FILE, "w")
-            viewer_write.write(viewer_str_out.encode('ascii', 'xmlcharrefreplace').decode()) # Escape unicode chars
-            viewer_write.close()
+                    # Write the updated HTML
+                    viewer_write = open(VIEWER_HTML_FILE, "w")
+                    viewer_write.write(viewer_str_out.encode('ascii', 'xmlcharrefreplace').decode()) # Escape unicode chars
+                    viewer_write.close()
 
-            # Refresh viewer
-            driver.refresh()
+                    # Refresh viewer
+                    driver.refresh()
 
-            valid_input = False
-            while valid_input == False:
+                    update_viewer = False
+
                 clear_screen()
                 print(input_msg)
                 print("=========================================")
@@ -348,6 +354,8 @@ def main():
 
                 print("+ (\\) \t- Move to new folder")
                 #print("+9 (\\) \t- Move to new folder (overwrite)")
+
+                print("\n` ()\t- Rename file")
 
                 print("")
 
@@ -363,10 +371,10 @@ def main():
                 user_input = 0
 
                 NEW_FOLDER_REGEX = r"\+\-? .*"
+                RENAME_FILE_REGEX = r"\`\-? .*"
 
                 # Check if the input is an int
-
-                if not (re.match(NEW_FOLDER_REGEX, user_input_str)):
+                if not (re.match(NEW_FOLDER_REGEX, user_input_str) or re.match(RENAME_FILE_REGEX, user_input_str)):
                     try:
                         user_input = int(user_input_str)
 
@@ -411,14 +419,14 @@ def main():
                     try:
                         shutil.move(file_path, destinations[user_input - 1])
 
-                        valid_input = True
+                        next_item = True
                         input_msg = "File moved to {}".format(destinations[user_input - 1])
 
                         if (renamed):
                             input_msg += " (Duplicate)"
 
                     except (shutil.Error):
-                        valid_input = False
+                        next_item = False
                         input_msg = "== ERROR: Could not move file to {}".format(destinations[user_input - 1])
                 
                 # Move to new folder
@@ -436,11 +444,11 @@ def main():
                         if (FOLDER_EXISTS == False):
                             try:
                                 os.mkdir(NEW_FOLDER_PATH + get_os_dir_slash())
-                                valid_input = True
+                                next_item = True
                                 create_folder_success = True
                             except Exception as e:
                                 input_msg = "== ERROR: Could not create folder {}: {}".format(NEW_FOLDER_PATH, type(e).__name__)
-                                valid_input = False
+                                next_item = False
                                 create_folder_success = False
                             
                         else:
@@ -452,7 +460,7 @@ def main():
                                 shutil.move(file_path, NEW_FOLDER_PATH)
 
                                 input_msg = "File moved to new folder {}".format(NEW_FOLDER_PATH)
-                                valid_input = True
+                                next_item = True
 
                                 # Add to the destinations list
                                 with open(DESTINATIONS_FILE_PATH, 'a', encoding="utf-8") as file:
@@ -462,15 +470,33 @@ def main():
 
                             except Exception as e:
                                 input_msg = "== ERROR: Could not move the file to {}: {}".format(NEW_FOLDER_PATH, type(e).__name__)
-                                valid_input = False
+                                next_item = False
 
                     else:
                         input_msg = "== ERROR: Could not move file to {}: Destination file already exists in folder".format(NEW_FOLDER_PATH)
-                        valid_input = False
-                        
+                        next_item = False
+                
+                # Rename
+                elif (re.match(RENAME_FILE_REGEX, user_input_str)):
+                    next_item = False
+
+                    try:
+                        NEW_NAME = f"{user_input_str[2:]}{FILE_EXT}"
+                        NEW_PATH = f"{FILE_DIR_PATH}{get_os_dir_slash()}{NEW_NAME}"
+                        os.rename(file_path, NEW_PATH)
+
+                    except OSError as error:
+                        input_msg = "== ERROR: Could not rename file to {}".format(NEW_NAME)
+                    
+                    input_msg = "Renamed {} to {}".format(file_name, NEW_NAME)
+                    file_path = NEW_PATH
+                    last_file_name_html = file_name_html.encode('ascii', 'xmlcharrefreplace').decode()
+                    last_media_html = media_html
+                    update_viewer = True
+
                 # Keep
                 elif (user_input_str == "0"):
-                    valid_input = True
+                    next_item = True
                     input_msg = "File exempted"
 
                     with open('exemptions.txt', 'a', encoding="utf-8") as file:
@@ -479,18 +505,18 @@ def main():
 
                 # Defer
                 elif (user_input_str == "00"):
-                    valid_input = True
+                    next_item = True
                     input_msg = "File skipped"
 
                 # Delete
                 elif (user_input_str == "9000"):
-                    valid_input = True                    
+                    next_item = True                    
                     input_msg = "File deleted"
                     send2trash(file_path)
 
                 # Secure delete
                 elif (user_input_str == "9009"):
-                    valid_input = True                    
+                    next_item = True                    
                     input_msg = "File deleted securely"
                     secure_delete.secure_delete(file_path)
 
@@ -498,7 +524,8 @@ def main():
                 else:
                     # print("Err")
                     input_msg = "Invalid entry"
-                    valid_input = False
+                    next_item = False
+                    update_viewer = False
                 
                 
                 # input()
